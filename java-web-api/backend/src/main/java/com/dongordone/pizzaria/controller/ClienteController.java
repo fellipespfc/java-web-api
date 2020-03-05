@@ -1,5 +1,6 @@
 package com.dongordone.pizzaria.controller;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
@@ -47,13 +49,48 @@ public class ClienteController {
 	
 		return ResponseEntity.ok(cliente.get());	
 	}
-	
+	 
 	@PostMapping
 	@ResponseStatus(HttpStatus.CREATED)
 	public Cliente adicionar(@RequestBody Cliente cliente)
 	{
 		return clientesRepository.save(cliente);
 	}
+	
+	//@RequestMapping(value = "/deleteAlert/{ids}", method = RequestMethod.DELETE)
+	@DeleteMapping("/deletarItens/{ids}")
+    public ResponseEntity<Void> massiveDelete(@PathVariable List<Long> ids)
+	{
+		List <String> mensagensErros = new ArrayList<String>();
+		
+		for(Long id : ids)
+		{
+			Optional<Cliente> cliente = clientesRepository.findById(id);
+			
+			if (cliente.isPresent()) 
+			{
+				try {		
+					clientesRepository.deleteById(id);	
+				}
+				catch(Exception ex)
+				{
+					mensagensErros.add("Erro ao excluir registro de Id: " + id 
+							+ " do Banco de Dados: "+ 
+							this.getClass()+ " , " + ex.getMessage());
+				}
+			}
+		}
+		
+		if(mensagensErros.size()!=0)
+		{
+			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, 
+					mensagensErros.stream()
+						.reduce("",(acc, item) -> acc + item.toString()) + ",");
+		}
+		
+		return ResponseEntity.status(HttpStatus.OK).build();
+    }
+	
 	
 	@DeleteMapping("/deletar/{id}")
 	@ResponseStatus(HttpStatus.GONE)
@@ -80,6 +117,7 @@ public class ClienteController {
 		return ResponseEntity.notFound().build();
 		
 	}
+	
 	
 	@PutMapping
 	@ResponseStatus(HttpStatus.OK)
