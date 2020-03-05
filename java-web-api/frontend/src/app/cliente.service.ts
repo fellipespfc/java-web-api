@@ -23,8 +23,9 @@ export class ClienteService {
     return this.httpClient.put(this.apiUrl, cliente);
   }
 
-  deletar(id) {
-    return this.httpClient.delete(this.apiUrl + "/deletar/" + id, id);
+  deletar(ids) {
+   // return this.httpClient.delete(this.apiUrl + "/deletar/" +id);
+   return this.httpClient.delete(this.apiUrl + "/deletarItens/" +ids);
   }
 }
 
