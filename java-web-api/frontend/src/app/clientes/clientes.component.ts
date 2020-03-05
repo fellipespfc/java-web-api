@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ClienteService } from '../cliente.service';
+import { isDate } from 'util';
 
 @Component({
   selector: 'app-clientes',
@@ -10,6 +11,7 @@ export class ClientesComponent implements OnInit {
 
   clientes = [];
   cliente = {};
+  selectedIds = [];
 
   constructor(private clienteService: ClienteService) {
 
@@ -33,9 +35,24 @@ export class ClientesComponent implements OnInit {
       });
   }
 
-  deletar(id){
-    this.clienteService.deletar(id)
+  selectIds(id){
+
+    const index = this.selectedIds.indexOf(id);
+
+    if(index != -1)
+    {
+      this.selectedIds.splice(index, 1)
+      
+    }
+    else{
+      this.selectedIds.push(id);
+    } 
+  }
+
+  deletar(){
+    this.clienteService.deletar(this.selectedIds)
     .subscribe(() => {
+      this.selectedIds = [];
       this.listar();
     });
   }
