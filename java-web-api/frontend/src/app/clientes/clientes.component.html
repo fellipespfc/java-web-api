@@ -48,7 +48,7 @@
 </p-panel>
 
 
-<p-table [value]="clientes">
+<!-- <p-table [value]="clientes" selectionMode="multiple">
     <ng-template pTemplate="header">
         <tr>
             <th>Nome</th>
@@ -75,4 +75,48 @@
     </ng-template>
 
 
+</p-table> -->
+
+
+
+
+
+<h3>Multiple Row Selection</h3>
+<p-table [columns]="cols" [value]="clientes" selectionMode="multiple" 
+    [(selection)]="selectedClientes1">
+    <ng-template pTemplate="header" let-columns>
+        <tr>
+            <th>Id</th>
+            <th>Nome</th>
+            <th>Telefone</th>
+            <th>Endereço</th>
+            <th>Bairro</th>
+            <th>Número Imovel</th>
+            <th>Complemento</th>
+          
+        </tr>
+    </ng-template>
+
+    <ng-template pTemplate="body" let-rowData let-columns="columns" 
+        let-rowIndex="rowIndex" let-cliente>
+        <tr [pSelectableRow]="rowData" [pSelectableRowIndex]="rowIndex" (click)="selectIds(cliente.id)">
+            <td>{{cliente.id}}</td>
+            <td>{{cliente.nome}}</td>
+            <td>{{cliente.telefone}}</td>
+            <td>{{cliente.endereco}}</td>
+            <td>{{cliente.bairro}}</td>
+            <td>{{cliente.numeroImovel}}</td>
+            <td>{{cliente.complemento}}</td>
+            
+        </tr>
+    </ng-template>
+    <ng-template pTemplate="summary">
+        <ul>
+            <li *ngFor="let cliente of selectedClientes1" style="text-align: left">
+                {{cliente.nome + ' - ' + cliente.telefone + ' - ' + cliente.endereco + ' - ' + cliente.bairro}}
+            </li>
+        </ul>
+    </ng-template>
 </p-table>
+
+<button pButton type="submit" label="Deletar Tudo" (click)="deletar()"></button>
